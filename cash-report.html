@@ -23,8 +23,11 @@
   header p{font-size:0.75rem;opacity:0.75;margin-top:2px;}
   .mnav{display:flex;align-items:center;gap:10px;margin-top:10px;}
   .mnav button{background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;border-radius:8px;font-size:1.1rem;cursor:pointer;}
-  .mnav span{flex:1;text-align:center;font-weight:700;font-size:0.95rem;}
-  .tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);position:sticky;top:104px;z-index:98;overflow-x:auto;}
+  .mnav input[type=date]{flex:1;text-align:center;font-weight:700;font-size:0.92rem;padding:7px;border-radius:8px;border:none;background:rgba(255,255,255,0.9);color:var(--ink);}
+  .day-status{margin-top:8px;padding:6px 10px;border-radius:8px;font-size:0.72rem;font-weight:700;text-align:center;}
+  .day-status.locked{background:rgba(255,255,255,0.2);color:#fff;}
+  .day-status.open{background:rgba(255,215,0,0.25);color:#fff;}
+  .tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);position:sticky;top:128px;z-index:98;overflow-x:auto;}
   .tab{flex:1;min-width:78px;padding:10px 4px;border:none;background:none;font-size:0.62rem;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;text-align:center;line-height:1.4;}
   .tab span{display:block;font-size:1rem;}
   .tab.on{color:var(--green);border-bottom-color:var(--green);}
@@ -42,6 +45,7 @@
   .btn.o{background:linear-gradient(90deg,#c47a00,#f39c12);color:#fff;}
   .btn.b{background:linear-gradient(90deg,#0077cc,#2196f3);color:#fff;}
   .btn.p{background:linear-gradient(90deg,#6b35b8,#9b59b6);color:#fff;}
+  .btn[disabled]{opacity:0.5;cursor:not-allowed;}
   /* summary */
   .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
   .sc{background:var(--card);border-radius:12px;padding:12px;border-left:4px solid #ccc;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
@@ -59,16 +63,17 @@
   .calc-row{display:flex;justify-content:space-between;padding:8px 0;font-size:0.88rem;border-bottom:1px dashed var(--border);}
   .calc-row:last-child{border-bottom:none;}
   .calc-row.minus{color:var(--red);}
-  .calc-row.plus{color:var(--green);}
   .calc-row.total{font-weight:700;border-top:2px solid var(--ink);margin-top:6px;padding-top:10px;font-size:1.05rem;}
-  /* simple input rows for sys/extra */
+  /* simple input rows */
   .inp-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;background:var(--green-bg);padding:9px 12px;border-radius:8px;}
   .inp-row label{font-size:0.75rem;font-weight:700;color:var(--green);flex:1;}
   .inp-row input{width:120px;text-align:right;padding:7px 9px;border:1.5px solid var(--green);border-radius:6px;font-weight:700;font-size:0.88rem;}
+  .inp-row input[disabled]{background:#eee;color:#888;}
   /* deduction column card */
   .ded-col{background:var(--card);border-radius:12px;border:2px solid var(--red);margin-bottom:14px;overflow:hidden;}
   .ded-col .dc-head{background:linear-gradient(90deg,#c0392b,#e74c3c);color:#fff;padding:10px 14px;font-weight:700;font-size:0.88rem;display:flex;justify-content:space-between;align-items:center;}
   .ded-col .dc-head button{background:rgba(255,255,255,0.25);border:none;color:#fff;padding:5px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;}
+  .ded-col .dc-head button[disabled]{opacity:0.5;cursor:not-allowed;}
   .ded-entry{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border);}
   .ded-entry:last-child{border-bottom:none;}
   .ded-entry .narration{flex:1.3;font-size:0.82rem;color:var(--muted);}
@@ -85,19 +90,18 @@
   .empty .ei{font-size:2.5rem;margin-bottom:8px;}
   .sh{display:flex;justify-content:space-between;align-items:center;margin:16px 0 10px;}
   .sh h2{font-size:0.85rem;font-weight:700;}
-  .ec{background:var(--card);border-radius:12px;padding:13px;border:1px solid var(--border);margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
-  .ec-actions{display:flex;justify-content:flex-end;gap:6px;margin-bottom:8px;}
-  .delbtn{background:var(--red-bg);border:1.5px solid var(--red);color:var(--red);font-size:0.8rem;cursor:pointer;padding:5px 9px;border-radius:8px;font-weight:700;}
+  .ec{background:var(--card);border-radius:12px;padding:13px;border:1px solid var(--border);margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer;}
   .ec .et{font-size:0.9rem;font-weight:600;}
   .tg{font-size:0.62rem;padding:2px 7px;border-radius:20px;font-weight:700;}
   .tg.gi{background:var(--green-bg);color:var(--green);}
   .tg.gr{background:var(--red-bg);color:var(--red);}
   .tg.gb{background:var(--blue-bg);color:var(--blue);}
-  /* modal for adding deduction entry */
+  /* modal */
   .modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;}
   .modal-ov.show{display:flex;}
   .modal-box{background:#fff;border-radius:16px 16px 0 0;padding:18px;width:100%;max-width:600px;}
   .modal-box h3{font-size:1rem;font-weight:700;margin-bottom:14px;}
+  .locked-banner{background:var(--orange-bg);border:1.5px solid var(--orange);color:var(--orange);padding:10px 14px;border-radius:10px;font-size:0.78rem;font-weight:600;margin-bottom:12px;text-align:center;}
 </style>
 </head>
 <body>
@@ -108,11 +112,16 @@
     <button onclick="exportData()" style="flex:1;background:rgba(255,255,255,0.18);border:none;color:#fff;padding:8px;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;">📥 Backup</button>
     <button onclick="importData()" style="flex:1;background:rgba(255,255,255,0.18);border:none;color:#fff;padding:8px;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;">📤 Restore</button>
   </div>
+  <div style="display:flex;gap:8px;margin-top:8px;">
+    <button onclick="shareWhatsApp()" style="flex:1;background:rgba(37,211,102,0.35);border:none;color:#fff;padding:8px;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;">💬 WhatsApp Share</button>
+    <button onclick="exportExcel()" style="flex:1;background:rgba(255,255,255,0.18);border:none;color:#fff;padding:8px;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;">📊 Excel Backup</button>
+  </div>
   <div class="mnav">
     <button onclick="chDate(-1)">‹</button>
-    <span id="dateLbl"></span>
+    <input type="date" id="dateLbl" onchange="onDateChange(this.value)">
     <button onclick="chDate(1)">›</button>
   </div>
+  <div class="day-status" id="dayStatus"></div>
 </header>
 
 <div class="tabs">
@@ -127,30 +136,51 @@
 
 <!-- SUMMARY -->
 <div id="pg-ov" class="pg on">
+  <div id="lockedBannerOv"></div>
   <div class="calc-card" id="calcCard"></div>
   <div class="sgrid" id="scards"></div>
+  <button class="btn g" id="saveDayBtn" onclick="saveDay()">📌 Save This Day (Lock)</button>
+  <button class="btn" id="unlockDayBtn" style="background:#eee;color:#333;display:none" onclick="unlockDay()">🔓 Unlock & Edit Again</button>
 </div>
 
 <!-- TOTAL CASH (System) -->
 <div id="pg-sys" class="pg">
+  <div id="lockedBannerSys"></div>
   <div class="card">
     <h3>🟢 System Cash Inputs</h3>
     <div class="inp-row"><label>Sarco System Cash (₹)</label><input type="number" id="sys-sarco" oninput="updateSys('sarco',this.value)"></div>
     <div class="inp-row"><label>Fusion System Cash (₹)</label><input type="number" id="sys-fusion" oninput="updateSys('fusion',this.value)"></div>
-    <div class="inp-row" style="background:var(--blue-bg)"><label style="color:var(--blue)">Extra Cash (₹)</label><input type="number" id="sys-extra" oninput="updateSys('extra',this.value)" style="border-color:var(--blue)"></div>
+    <div id="extra-sys-list"></div>
+    <button class="btn" id="addSysBtn" style="background:var(--blue-bg);border:1.5px dashed var(--blue);color:var(--blue);" onclick="openAddSysModal()">+ Add Company / Cash</button>
   </div>
   <div class="card" style="background:var(--green-bg);border-color:var(--green)">
     <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1rem;color:var(--green)">
       <span>Total Cash</span><span id="totalCashDisplay">₹0</span>
     </div>
-    <div style="font-size:0.72rem;color:var(--muted);margin-top:4px">Sarco + Fusion + Extra Cash</div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-top:4px">Sarco + Fusion + Manually Added</div>
+  </div>
+</div>
+
+<!-- ADD SYS MODAL -->
+<div class="modal-ov" id="addSysModal">
+  <div class="modal-box">
+    <h3>+ Add Company / Cash</h3>
+    <div class="row full">
+      <div class="fg"><label>Name</label><input type="text" id="addsys-name" placeholder="e.g. Extra Cash, New Company"></div>
+    </div>
+    <div class="row full">
+      <div class="fg"><label>Amount (₹)</label><input type="number" id="addsys-amount" placeholder="0"></div>
+    </div>
+    <button class="btn g" onclick="saveAddSysModal()">✓ Add</button>
+    <button class="btn" style="background:#eee;color:#333" onclick="closeAddSysModal()">Cancel</button>
   </div>
 </div>
 
 <!-- DASTI -->
 <div id="pg-ds" class="pg">
+  <div id="lockedBannerDs"></div>
   <div class="ded-col">
-    <div class="dc-head"><span>✋ Dasti</span><button onclick="openAddModal('ds')">+ Add</button></div>
+    <div class="dc-head"><span>✋ Dasti</span><button id="dsAddBtn" onclick="openAddModal('ds')">+ Add</button></div>
     <div id="ds-list"></div>
     <div class="ded-total"><span>Total Dasti</span><span id="ds-total">₹0</span></div>
   </div>
@@ -158,8 +188,9 @@
 
 <!-- SARCO PAID DUE -->
 <div id="pg-sp" class="pg">
+  <div id="lockedBannerSp"></div>
   <div class="ded-col">
-    <div class="dc-head"><span>🔵 Sarco Paid Due</span><button onclick="openAddModal('sp')">+ Add</button></div>
+    <div class="dc-head"><span>🔵 Sarco Paid Due</span><button id="spAddBtn" onclick="openAddModal('sp')">+ Add</button></div>
     <div id="sp-list"></div>
     <div class="ded-total"><span>Total Sarco Paid Due</span><span id="sp-total">₹0</span></div>
   </div>
@@ -167,8 +198,9 @@
 
 <!-- FUSION PAID DUE -->
 <div id="pg-fp" class="pg">
+  <div id="lockedBannerFp"></div>
   <div class="ded-col">
-    <div class="dc-head"><span>🟣 Fusion Paid Due</span><button onclick="openAddModal('fp')">+ Add</button></div>
+    <div class="dc-head"><span>🟣 Fusion Paid Due</span><button id="fpAddBtn" onclick="openAddModal('fp')">+ Add</button></div>
     <div id="fp-list"></div>
     <div class="ded-total"><span>Total Fusion Paid Due</span><span id="fp-total">₹0</span></div>
   </div>
@@ -176,12 +208,12 @@
 
 <!-- ACTUAL IN HAND BREAKUP -->
 <div id="pg-actual" class="pg">
+  <div id="lockedBannerActual"></div>
   <div class="card">
     <h3>🏦 Actual In Hand Breakup</h3>
-    <p style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">Cash, Bank, Taufiq — yahan daalo jitna physically/account mein hai</p>
+    <p style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">Cash, Bank — yahan daalo jitna physically/account mein hai</p>
     <div class="inp-row"><label>Cash (₹)</label><input type="number" id="loc-cash" oninput="updateLoc('cash',this.value)"></div>
     <div class="inp-row"><label>Bank (₹)</label><input type="number" id="loc-bank" oninput="updateLoc('bank',this.value)"></div>
-    <div class="inp-row"><label>Taufiq (₹)</label><input type="number" id="loc-taufiq" oninput="updateLoc('taufiq',this.value)"></div>
   </div>
   <div class="card" style="background:var(--orange-bg);border-color:var(--orange)">
     <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1rem;color:var(--orange)">
@@ -192,11 +224,7 @@
 
 <!-- HISTORY -->
 <div id="pg-hist" class="pg">
-  <div class="card">
-    <h3>📅 Save Today's Snapshot</h3>
-    <button class="btn b" onclick="saveSnapshot()">📌 Save Snapshot for Today</button>
-  </div>
-  <div class="sh"><h2>Saved Snapshots</h2></div>
+  <p style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;">Saved (locked) din yahan dikhte hain. Tap karke us din ka data dekho.</p>
   <div id="list-hist"></div>
 </div>
 
@@ -205,7 +233,7 @@
   <div class="modal-box">
     <h3 id="addModalTitle">+ Add Entry</h3>
     <div class="row full">
-      <div class="fg"><label>Narration</label><input type="text" id="add-narration" placeholder="e.g. Hamali, Toner"></div>
+      <div class="fg"><label>Name</label><input type="text" id="add-narration" placeholder="e.g. Hamali, Toner"></div>
     </div>
     <div class="row full">
       <div class="fg"><label>Amount (₹)</label><input type="number" id="add-amount" placeholder="0"></div>
@@ -217,29 +245,41 @@
 
 <script>
 var MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-var cMon = new Date().getMonth();
-var cYr  = new Date().getFullYear();
 var addModalType=null;
+var curDate = todayISO();
 
-function today(){ return new Date().toISOString().split('T')[0]; }
+function todayISO(){ return new Date().toISOString().split('T')[0]; }
 function fmt(n){ return '₹' + (Number(n)||0).toLocaleString('en-IN'); }
 function fdate(s){ if(!s) return ''; var p=s.split('-'); return p[2]+' '+MON[parseInt(p[1])-1]+' '+p[0]; }
 
-function getKey(){ return 'tcr3_'+cYr+'_'+cMon; }
-function getD(){
-  var v=localStorage.getItem(getKey());
-  var def={sys:{sarco:0,fusion:0,extra:0}, ds:[], sp:[], fp:[], locs:{cash:0,bank:0,taufiq:0}, hist:[]};
+// ---- Day-based storage: each date is its own key ----
+function dayKey(dateStr){ return 'tcr4_day_'+dateStr; }
+function getDay(dateStr){
+  var v=localStorage.getItem(dayKey(dateStr));
+  var def={date:dateStr, locked:false, sys:{sarco:0,fusion:0}, sysExtras:[], ds:[], sp:[], fp:[], locs:{cash:0,bank:0}};
   try{ return v ? Object.assign({}, def, JSON.parse(v)) : def; }
   catch(e){ return def; }
 }
-function setD(d){ localStorage.setItem(getKey(), JSON.stringify(d)); }
+function setDay(d){ localStorage.setItem(dayKey(d.date), JSON.stringify(d)); }
+
+function getAllDayKeys(){
+  var keys=[];
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k.indexOf('tcr4_day_')===0) keys.push(k);
+  }
+  return keys;
+}
 
 function chDate(dir){
-  cMon += dir;
-  if(cMon>11){ cMon=0; cYr++; }
-  if(cMon<0){ cMon=11; cYr--; }
-  document.getElementById('dateLbl').textContent = MON[cMon]+' '+cYr;
-  loadInputsForMonth();
+  var dt = new Date(curDate+'T00:00:00');
+  dt.setDate(dt.getDate()+dir);
+  curDate = dt.toISOString().split('T')[0];
+  document.getElementById('dateLbl').value = curDate;
+  renderAll();
+}
+function onDateChange(val){
+  curDate = val;
   renderAll();
 }
 
@@ -253,34 +293,68 @@ function goTab(t){
   renderAll();
 }
 
-function loadInputsForMonth(){
-  var d=getD();
-  document.getElementById('sys-sarco').value = d.sys.sarco || '';
-  document.getElementById('sys-fusion').value = d.sys.fusion || '';
-  document.getElementById('sys-extra').value = d.sys.extra || '';
-  document.getElementById('loc-cash').value = d.locs.cash || '';
-  document.getElementById('loc-bank').value = d.locs.bank || '';
-  document.getElementById('loc-taufiq').value = d.locs.taufiq || '';
-}
-
 // ---- SYSTEM CASH INPUTS ----
 function updateSys(key, val){
-  var d=getD();
+  var d=getDay(curDate);
+  if(d.locked) return;
   d.sys[key]=parseFloat(val)||0;
-  setD(d);
+  setDay(d);
   renderAll();
+}
+
+function openAddSysModal(){
+  var d=getDay(curDate);
+  if(d.locked){ alert('Yeh din locked hai. Unlock karo pehle.'); return; }
+  document.getElementById('addsys-name').value='';
+  document.getElementById('addsys-amount').value='';
+  document.getElementById('addSysModal').classList.add('show');
+}
+function closeAddSysModal(){
+  document.getElementById('addSysModal').classList.remove('show');
+}
+function saveAddSysModal(){
+  var name=document.getElementById('addsys-name').value.trim();
+  var amount=parseFloat(document.getElementById('addsys-amount').value)||0;
+  if(!name){ alert('Please enter a name!'); return; }
+  var d=getDay(curDate);
+  if(!d.sysExtras) d.sysExtras=[];
+  d.sysExtras.push({id:Date.now(), name:name, amt:amount});
+  setDay(d);
+  closeAddSysModal();
+  renderAll();
+}
+function updateSysExtraAmt(id, val){
+  id=parseInt(id);
+  var d=getDay(curDate);
+  if(d.locked) return;
+  for(var i=0;i<d.sysExtras.length;i++){
+    if(parseInt(d.sysExtras[i].id)===id){ d.sysExtras[i].amt=parseFloat(val)||0; break; }
+  }
+  setDay(d);
+  renderAll();
+}
+function delSysExtra(id){
+  var d=getDay(curDate);
+  if(d.locked){ alert('Yeh din locked hai.'); return; }
+  id=parseInt(id);
+  if(!confirm('Delete this entry?')) return;
+  d.sysExtras=d.sysExtras.filter(function(e){ return parseInt(e.id)!==id; });
+  setDay(d); renderAll();
 }
 
 // ---- ACTUAL LOCATION INPUTS ----
 function updateLoc(key, val){
-  var d=getD();
+  var d=getDay(curDate);
+  if(d.locked) return;
   d.locs[key]=parseFloat(val)||0;
-  setD(d);
+  setDay(d);
   renderAll();
 }
 
 // ---- ADD ENTRY MODAL (for ds/sp/fp) ----
 function openAddModal(type){
+  var d=getDay(curDate);
+  if(d.locked){ alert('Yeh din locked hai. Unlock karo pehle.'); return; }
   addModalType=type;
   document.getElementById('add-narration').value='';
   document.getElementById('add-amount').value='';
@@ -296,62 +370,86 @@ function saveAddModal(){
   var narration=document.getElementById('add-narration').value.trim();
   var amount=parseFloat(document.getElementById('add-amount').value)||0;
   if(!amount){ alert('Please enter amount!'); return; }
-  var d=getD();
+  var d=getDay(curDate);
   d[addModalType].push({id:Date.now(), narration:narration||'Entry', amt:amount});
-  setD(d);
+  setDay(d);
   closeAddModal();
   renderAll();
 }
 function delEntry(type, id){
+  var d=getDay(curDate);
+  if(d.locked){ alert('Yeh din locked hai.'); return; }
   id=parseInt(id);
   if(!confirm('Delete this entry?')) return;
-  var d=getD();
   d[type]=d[type].filter(function(e){ return parseInt(e.id)!==id; });
-  setD(d); renderAll();
+  setDay(d); renderAll();
 }
 
-// ---- SNAPSHOT ----
-function saveSnapshot(){
-  var d=getD();
-  var calc=computeTotals(d);
-  d.hist.push({
-    id:Date.now(),
-    date: today(),
-    totalCash: calc.totalCash,
-    dsTotal: calc.dsTotal,
-    spTotal: calc.spTotal,
-    fpTotal: calc.fpTotal,
-    actualInHand: calc.actualInHand,
-    actuallyHave: calc.actuallyHave,
-    diff: calc.diff
-  });
-  setD(d);
-  alert('Snapshot saved for '+fdate(today())+'!');
+// ---- SAVE / LOCK DAY ----
+function saveDay(){
+  var d=getDay(curDate);
+  if(!confirm('Is din ko save (lock) karein? Lock hone ke baad edit karne ke liye unlock karna hoga.')) return;
+  d.locked=true;
+  setDay(d);
   renderAll();
 }
-function delHist(id){
-  id=parseInt(id);
-  if(!confirm('Delete this snapshot?')) return;
-  var d=getD();
-  d.hist=d.hist.filter(function(e){ return parseInt(e.id)!==id; });
-  setD(d); renderAll();
+function unlockDay(){
+  var d=getDay(curDate);
+  if(!confirm('Is din ko unlock karke edit karna hai?')) return;
+  d.locked=false;
+  setDay(d);
+  renderAll();
 }
 
 function computeTotals(d){
-  var totalCash = (d.sys.sarco||0)+(d.sys.fusion||0)+(d.sys.extra||0);
+  var extrasTotal=0;
+  for(var i=0;i<(d.sysExtras||[]).length;i++) extrasTotal+=d.sysExtras[i].amt||0;
+  var totalCash = (d.sys.sarco||0)+(d.sys.fusion||0)+extrasTotal;
   var dsTotal=0; for(var i=0;i<d.ds.length;i++) dsTotal+=d.ds[i].amt||0;
   var spTotal=0; for(var i=0;i<d.sp.length;i++) spTotal+=d.sp[i].amt||0;
   var fpTotal=0; for(var i=0;i<d.fp.length;i++) fpTotal+=d.fp[i].amt||0;
   var actualInHand = totalCash - dsTotal - spTotal - fpTotal;
-  var actuallyHave = (d.locs.cash||0)+(d.locs.bank||0)+(d.locs.taufiq||0);
+  var actuallyHave = (d.locs.cash||0)+(d.locs.bank||0);
   var diff = actualInHand - actuallyHave;
-  return {totalCash:totalCash, dsTotal:dsTotal, spTotal:spTotal, fpTotal:fpTotal, actualInHand:actualInHand, actuallyHave:actuallyHave, diff:diff};
+  return {totalCash:totalCash, extrasTotal:extrasTotal, dsTotal:dsTotal, spTotal:spTotal, fpTotal:fpTotal, actualInHand:actualInHand, actuallyHave:actuallyHave, diff:diff};
+}
+
+function setInputsDisabled(disabled){
+  ['sys-sarco','sys-fusion','loc-cash','loc-bank'].forEach(function(id){
+    document.getElementById(id).disabled=disabled;
+  });
+  ['addSysBtn','dsAddBtn','spAddBtn','fpAddBtn'].forEach(function(id){
+    document.getElementById(id).disabled=disabled;
+  });
 }
 
 // ---- RENDER ----
 function renderAll(){
-  var d=getD();
+  document.getElementById('dateLbl').value = curDate;
+  var d=getDay(curDate);
   var calc=computeTotals(d);
+  var locked = !!d.locked;
+
+  // Day status banner
+  var statusEl=document.getElementById('dayStatus');
+  if(locked){
+    statusEl.className='day-status locked';
+    statusEl.textContent='🔒 Locked — Saved Day';
+  } else {
+    statusEl.className='day-status open';
+    statusEl.textContent="✏️ Open — Editing Today's Entry";
+  }
+
+  var bannerHtml = locked ? '<div class="locked-banner">🔒 Yeh din locked/saved hai. Edit karne ke liye Summary tab se "Unlock" karo.</div>' : '';
+  ['Ov','Sys','Ds','Sp','Fp','Actual'].forEach(function(s){
+    var el=document.getElementById('lockedBanner'+s);
+    if(el) el.innerHTML=bannerHtml;
+  });
+
+  setInputsDisabled(locked);
+
+  document.getElementById('saveDayBtn').style.display = locked ? 'none' : 'block';
+  document.getElementById('unlockDayBtn').style.display = locked ? 'block' : 'none';
 
   // Calc card on summary
   document.getElementById('calcCard').innerHTML=
@@ -363,14 +461,32 @@ function renderAll(){
 
   document.getElementById('scards').innerHTML=
     '<div class="sc si"><div class="sl">Actual In Hand (Should Be)</div><div class="sv">'+fmt(calc.actualInHand)+'</div><div class="ss">After all deductions</div></div>'+
-    '<div class="sc se"><div class="sl">Actually Hai (Cash+Bank+Taufiq)</div><div class="sv">'+fmt(calc.actuallyHave)+'</div><div class="ss">Physical breakup</div></div>'+
+    '<div class="sc se"><div class="sl">Actually Hai (Cash+Bank)</div><div class="sv">'+fmt(calc.actuallyHave)+'</div><div class="ss">Physical breakup</div></div>'+
     '<div class="sc sn" style="border-color:'+(calc.diff===0?'var(--green)':'var(--red)')+'">'+
       '<div class="sl">⚖️ Difference (Should Be − Actually Hai)</div>'+
       '<div class="sv" style="color:'+(calc.diff===0?'var(--green)':'var(--red)')+'">'+fmt(calc.diff)+'</div>'+
       '<div class="ss">'+(calc.diff===0?'✅ Match! Sab sahi hai':(calc.diff>0?'⚠️ Itna paisa SHORT hai':'➕ Itna paisa EXTRA hai'))+'</div>'+
     '</div>';
 
-  // Total cash tab display
+  // Inputs
+  document.getElementById('sys-sarco').value = d.sys.sarco || '';
+  document.getElementById('sys-fusion').value = d.sys.fusion || '';
+  document.getElementById('loc-cash').value = d.locs.cash || '';
+  document.getElementById('loc-bank').value = d.locs.bank || '';
+
+  // Render extra system cash entries
+  var extraSysHtml='';
+  var sysExtras = d.sysExtras||[];
+  for(var i=0;i<sysExtras.length;i++){
+    var ex=sysExtras[i];
+    extraSysHtml += '<div class="item-row" style="margin-bottom:10px">'+
+      '<span class="item-name">'+ex.name+'</span>'+
+      '<input type="number" value="'+ex.amt+'" '+(locked?'disabled':'')+' oninput="updateSysExtraAmt('+ex.id+',this.value)">'+
+      (locked?'':'<button class="item-del" onclick="delSysExtra('+ex.id+')">✕</button>')+
+    '</div>';
+  }
+  document.getElementById('extra-sys-list').innerHTML=extraSysHtml;
+
   document.getElementById('totalCashDisplay').textContent = fmt(calc.totalCash);
   document.getElementById('actuallyHaveDisplay').textContent = fmt(calc.actuallyHave);
 
@@ -384,7 +500,7 @@ function renderAll(){
       html += '<div class="ded-entry">'+
         '<span class="narration">('+e.narration+')</span>'+
         '<span class="amt">'+fmt(e.amt)+'</span>'+
-        '<button class="del" onclick="delEntry(\''+type+'\','+e.id+')">✕</button>'+
+        (locked?'':'<button class="del" onclick="delEntry(\''+type+'\','+e.id+')">✕</button>')+
       '</div>';
     }
     document.getElementById(containerId).innerHTML=html;
@@ -395,41 +511,134 @@ function renderAll(){
   renderDedList('sp','sp-list','sp-total');
   renderDedList('fp','fp-list','fp-total');
 
-  // History
-  var histSorted=[].concat(d.hist).sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+  // History - all locked days
+  var keys=getAllDayKeys();
+  var lockedDays=[];
+  for(var i=0;i<keys.length;i++){
+    try{
+      var dd=JSON.parse(localStorage.getItem(keys[i]));
+      if(dd && dd.locked) lockedDays.push(dd);
+    }catch(e){}
+  }
+  lockedDays.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+
   var hhtml='';
-  if(histSorted.length===0) hhtml='<div class="empty"><div class="ei">📅</div>No snapshots saved yet</div>';
-  else for(var i=0;i<histSorted.length;i++){
-    var e=histSorted[i];
-    hhtml+='<div class="ec">'+
-      '<div class="ec-actions"><button class="delbtn" onclick="delHist('+e.id+')">✕</button></div>'+
+  if(lockedDays.length===0) hhtml='<div class="empty"><div class="ei">📅</div>Abhi tak koi din save nahi hua</div>';
+  else for(var i=0;i<lockedDays.length;i++){
+    var e=lockedDays[i];
+    var c=computeTotals(e);
+    hhtml+='<div class="ec" onclick="goToDay(\''+e.date+'\')">'+
       '<div class="et">'+fdate(e.date)+'</div>'+
       '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">'+
-        '<span class="tg gb">Should Be: '+fmt(e.actualInHand)+'</span>'+
-        '<span class="tg gi">Actually: '+fmt(e.actuallyHave)+'</span>'+
-        '<span class="tg '+(e.diff===0?'gi':'gr')+'">Diff: '+fmt(e.diff)+'</span>'+
+        '<span class="tg gb">Should Be: '+fmt(c.actualInHand)+'</span>'+
+        '<span class="tg gi">Actually: '+fmt(c.actuallyHave)+'</span>'+
+        '<span class="tg '+(c.diff===0?'gi':'gr')+'">Diff: '+fmt(c.diff)+'</span>'+
       '</div>'+
     '</div>';
   }
   document.getElementById('list-hist').innerHTML=hhtml;
 }
 
-document.getElementById('dateLbl').textContent = MON[cMon]+' '+cYr;
-loadInputsForMonth();
+function goToDay(dateStr){
+  curDate=dateStr;
+  goTab('ov');
+}
+
+document.getElementById('dateLbl').value = curDate;
 renderAll();
+
+// ---- WHATSAPP SHARE ----
+function shareWhatsApp(){
+  var d=getDay(curDate);
+  var calc=computeTotals(d);
+  var msg = '*💰 Taufiq Cash Report*\n';
+  msg += fdate(curDate)+'\n\n';
+  msg += '🟢 *Total Cash:* '+fmt(calc.totalCash)+'\n';
+  msg += '  Sarco: '+fmt(d.sys.sarco)+'\n';
+  msg += '  Fusion: '+fmt(d.sys.fusion)+'\n';
+  if((d.sysExtras||[]).length){
+    for(var i=0;i<d.sysExtras.length;i++) msg += '  '+d.sysExtras[i].name+': '+fmt(d.sysExtras[i].amt)+'\n';
+  }
+  msg += '\n✋ *Dasti:* '+fmt(calc.dsTotal)+'\n';
+  msg += '🔵 *Sarco Paid Due:* '+fmt(calc.spTotal)+'\n';
+  msg += '🟣 *Fusion Paid Due:* '+fmt(calc.fpTotal)+'\n\n';
+  msg += '✅ *Actual In Hand:* '+fmt(calc.actualInHand)+'\n\n';
+  msg += '🏦 *Actually Hai:* '+fmt(calc.actuallyHave)+'\n';
+  msg += '  Cash: '+fmt(d.locs.cash)+'\n';
+  msg += '  Bank: '+fmt(d.locs.bank)+'\n\n';
+  msg += '⚖️ *Difference:* '+fmt(calc.diff)+'\n';
+  msg += (calc.diff===0?'✅ Match!':(calc.diff>0?'⚠️ Short hai':'➕ Extra hai'));
+
+  var url = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
+}
+
+// ---- EXCEL (CSV) EXPORT ----
+function csvEscape(val){
+  val = String(val===undefined||val===null ? '' : val);
+  if(val.indexOf(',')>-1 || val.indexOf('"')>-1 || val.indexOf('\n')>-1){
+    val = '"' + val.replace(/"/g,'""') + '"';
+  }
+  return val;
+}
+function exportExcel(){
+  var d=getDay(curDate);
+  var calc=computeTotals(d);
+  var rows=[];
+
+  rows.push(['Taufiq Cash Report', fdate(curDate)]);
+  rows.push([]);
+  rows.push(['SYSTEM CASH']);
+  rows.push(['Name','Amount']);
+  rows.push(['Sarco', d.sys.sarco||0]);
+  rows.push(['Fusion', d.sys.fusion||0]);
+  for(var i=0;i<(d.sysExtras||[]).length;i++) rows.push([d.sysExtras[i].name, d.sysExtras[i].amt||0]);
+  rows.push(['Total Cash', calc.totalCash]);
+  rows.push([]);
+
+  function addSection(title, list){
+    rows.push([title]);
+    rows.push(['Name','Amount']);
+    for(var i=0;i<list.length;i++) rows.push([list[i].narration, list[i].amt||0]);
+    var total=0; for(var i=0;i<list.length;i++) total+=list[i].amt||0;
+    rows.push(['Total', total]);
+    rows.push([]);
+  }
+  addSection('DASTI', d.ds);
+  addSection('SARCO PAID DUE', d.sp);
+  addSection('FUSION PAID DUE', d.fp);
+
+  rows.push(['ACTUAL IN HAND', calc.actualInHand]);
+  rows.push([]);
+  rows.push(['ACTUALLY HAI']);
+  rows.push(['Cash', d.locs.cash||0]);
+  rows.push(['Bank', d.locs.bank||0]);
+  rows.push(['Total Actually Hai', calc.actuallyHave]);
+  rows.push([]);
+  rows.push(['DIFFERENCE (Should Be - Actually Hai)', calc.diff]);
+
+  var csv = rows.map(function(r){ return r.map(csvEscape).join(','); }).join('\r\n');
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'Taufiq-Cash-Report-'+curDate+'.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 function exportData(){
   var allData = {};
   for(var i=0;i<localStorage.length;i++){
     var k=localStorage.key(i);
-    if(k.indexOf('tcr3_')===0) allData[k]=localStorage.getItem(k);
+    if(k.indexOf('tcr4_day_')===0) allData[k]=localStorage.getItem(k);
   }
   var json = JSON.stringify(allData, null, 2);
   var blob = new Blob([json], {type:'application/json'});
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
   a.href = url;
-  a.download = 'taufiq-cash-report-backup-'+today()+'.json';
+  a.download = 'taufiq-cash-report-backup-'+todayISO()+'.json';
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -446,10 +655,9 @@ function importData(){
         var data = JSON.parse(ev.target.result);
         var count=0;
         for(var k in data){
-          if(k.indexOf('tcr3_')===0){ localStorage.setItem(k, data[k]); count++; }
+          if(k.indexOf('tcr4_day_')===0){ localStorage.setItem(k, data[k]); count++; }
         }
-        alert('Data imported! '+count+' months restored.');
-        loadInputsForMonth();
+        alert('Data imported! '+count+' days restored.');
         renderAll();
       } catch(err){ alert('Invalid backup file!'); }
     };
