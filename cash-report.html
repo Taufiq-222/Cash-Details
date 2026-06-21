@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taufiq Cash Report</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a7a4a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Taufiq Cash Report">
+<style>
+  :root {
+    --ink:#1a1a2e;--green:#1a7a4a;--green-bg:#e8f7ef;
+    --red:#c0392b;--red-bg:#fdecea;--orange:#c47a00;--orange-bg:#fff8e1;
+    --blue:#0077cc;--blue-bg:#e8f4ff;--purple:#6b35b8;--purple-bg:#f3eeff;
+    --surface:#f7f8fc;--card:#fff;--border:#e0e4ef;--muted:#6b7280;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:sans-serif;background:var(--surface);color:var(--ink);}
+  header{background:linear-gradient(135deg,#1a7a4a,#0d4a2a);color:#fff;padding:16px;position:sticky;top:0;z-index:99;}
+  header h1{font-size:1.2rem;font-weight:700;}
+  header p{font-size:0.75rem;opacity:0.75;margin-top:2px;}
+  .mnav{display:flex;align-items:center;gap:10px;margin-top:10px;}
+  .mnav button{background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;border-radius:8px;font-size:1.1rem;cursor:pointer;}
+  .mnav span{flex:1;text-align:center;font-weight:700;font-size:0.95rem;}
+  .tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);position:sticky;top:104px;z-index:98;overflow-x:auto;}
+  .tab{flex:1;min-width:78px;padding:10px 4px;border:none;background:none;font-size:0.62rem;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;text-align:center;line-height:1.4;}
+  .tab span{display:block;font-size:1rem;}
+  .tab.on{color:var(--green);border-bottom-color:var(--green);}
+  .pg{display:none;padding:14px;max-width:600px;margin:0 auto;}
+  .pg.on{display:block;}
+  .card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+  .card h3{font-size:0.85rem;font-weight:700;color:var(--green);margin-bottom:12px;}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+  .row.full{grid-template-columns:1fr;}
+  .fg{display:flex;flex-direction:column;gap:4px;}
+  .fg label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;}
+  .fg input,.fg textarea,.fg select{padding:9px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;background:var(--surface);color:var(--ink);font-family:inherit;}
+  .btn{display:block;width:100%;padding:11px;border:none;border-radius:10px;font-size:0.88rem;font-weight:700;cursor:pointer;margin-top:6px;text-align:center;}
+  .btn.g{background:linear-gradient(90deg,#1a7a4a,#27ae60);color:#fff;}
+  .btn.o{background:linear-gradient(90deg,#c47a00,#f39c12);color:#fff;}
+  .btn.b{background:linear-gradient(90deg,#0077cc,#2196f3);color:#fff;}
+  .btn.p{background:linear-gradient(90deg,#6b35b8,#9b59b6);color:#fff;}
+  /* summary */
+  .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .sc{background:var(--card);border-radius:12px;padding:12px;border-left:4px solid #ccc;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+  .sc.si{border-color:var(--green);}
+  .sc.se{border-color:var(--red);}
+  .sc.sn{border-color:var(--blue);grid-column:1/-1;background:linear-gradient(135deg,#eef2ff,#e8f0ff);}
+  .sc .sl{font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;}
+  .sc .sv{font-size:1.2rem;font-weight:700;margin-top:3px;}
+  .sc.si .sv{color:var(--green);}
+  .sc.se .sv{color:var(--red);}
+  .sc.sn .sv{font-size:1.5rem;color:var(--blue);}
+  .sc .ss{font-size:0.65rem;color:var(--muted);margin-top:2px;}
+  /* calculation breakdown card */
+  .calc-card{background:var(--card);border-radius:14px;padding:16px;border:2px solid var(--blue);margin-bottom:14px;}
+  .calc-row{display:flex;justify-content:space-between;padding:8px 0;font-size:0.88rem;border-bottom:1px dashed var(--border);}
+  .calc-row:last-child{border-bottom:none;}
+  .calc-row.minus{color:var(--red);}
+  .calc-row.plus{color:var(--green);}
+  .calc-row.total{font-weight:700;border-top:2px solid var(--ink);margin-top:6px;padding-top:10px;font-size:1.05rem;}
+  /* simple input rows for sys/extra */
+  .inp-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;background:var(--green-bg);padding:9px 12px;border-radius:8px;}
+  .inp-row label{font-size:0.75rem;font-weight:700;color:var(--green);flex:1;}
+  .inp-row input{width:120px;text-align:right;padding:7px 9px;border:1.5px solid var(--green);border-radius:6px;font-weight:700;font-size:0.88rem;}
+  /* deduction column card */
+  .ded-col{background:var(--card);border-radius:12px;border:2px solid var(--red);margin-bottom:14px;overflow:hidden;}
+  .ded-col .dc-head{background:linear-gradient(90deg,#c0392b,#e74c3c);color:#fff;padding:10px 14px;font-weight:700;font-size:0.88rem;display:flex;justify-content:space-between;align-items:center;}
+  .ded-col .dc-head button{background:rgba(255,255,255,0.25);border:none;color:#fff;padding:5px 10px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;}
+  .ded-entry{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border);}
+  .ded-entry:last-child{border-bottom:none;}
+  .ded-entry .narration{flex:1.3;font-size:0.82rem;color:var(--muted);}
+  .ded-entry .amt{font-weight:700;font-size:0.88rem;color:var(--red);white-space:nowrap;}
+  .ded-entry .del{background:var(--red-bg);border:none;color:var(--red);border-radius:6px;width:26px;height:28px;cursor:pointer;flex-shrink:0;font-size:0.8rem;}
+  .ded-total{display:flex;justify-content:space-between;padding:10px 14px;font-weight:700;background:#fdf3f2;color:var(--red);font-size:0.9rem;}
+  .empty-ded{padding:16px;text-align:center;color:var(--muted);font-size:0.78rem;}
+  /* breakup */
+  .item-row{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:8px;}
+  .item-row .item-name{flex:1;font-weight:600;font-size:0.85rem;}
+  .item-row input[type=number]{width:110px;text-align:right;padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;font-weight:700;font-size:0.85rem;}
+  .item-row .item-del{background:var(--red-bg);border:none;color:var(--red);border-radius:6px;width:30px;height:32px;cursor:pointer;flex-shrink:0;}
+  .empty{text-align:center;padding:36px 16px;color:var(--muted);font-size:0.85rem;}
+  .empty .ei{font-size:2.5rem;margin-bottom:8px;}
+  .sh{display:flex;justify-content:space-between;align-items:center;margin:16px 0 10px;}
+  .sh h2{font-size:0.85rem;font-weight:700;}
+  .ec{background:var(--card);border-radius:12px;padding:13px;border:1px solid var(--border);margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+  .ec-actions{display:flex;justify-content:flex-end;gap:6px;margin-bottom:8px;}
+  .delbtn{background:var(--red-bg);border:1.5px solid var(--red);color:var(--red);font-size:0.8rem;cursor:pointer;padding:5px 9px;border-radius:8px;font-weight:700;}
+  .ec .et{font-size:0.9rem;font-weight:600;}
+  .tg{font-size:0.62rem;padding:2px 7px;border-radius:20px;font-weight:700;}
+  .tg.gi{background:var(--green-bg);color:var(--green);}
+  .tg.gr{background:var(--red-bg);color:var(--red);}
+  .tg.gb{background:var(--blue-bg);color:var(--blue);}
+  /* modal for adding deduction entry */
+  .modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;}
+  .modal-ov.show{display:flex;}
+  .modal-box{background:#fff;border-radius:16px 16px 0 0;padding:18px;width:100%;max-width:600px;}
+  .modal-box h3{font-size:1rem;font-weight:700;margin-bottom:14px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>💰 Taufiq Cash Report</h1>
+  <p>Total Cash − Dasti − Paid Due = Actual In Hand</p>
+  <div style="display:flex;gap:8px;margin-top:10px;">
+    <button onclick="exportData()" style="flex:1;background:rgba(255,255,255,0.18);border:none;color:#fff;padding:8px;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;">📥 Backup</button>
+    <button onclick="importData()" style="flex:1;background:rgba(255,255,255,0.18);border:none;color:#fff;padding:8px;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;">📤 Restore</button>
+  </div>
+  <div class="mnav">
+    <button onclick="chDate(-1)">‹</button>
+    <span id="dateLbl"></span>
+    <button onclick="chDate(1)">›</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab on" onclick="goTab('ov')"><span>📊</span>Summary</button>
+  <button class="tab" onclick="goTab('sys')"><span>🟢</span>Total Cash</button>
+  <button class="tab" onclick="goTab('ds')"><span>✋</span>Dasti</button>
+  <button class="tab" onclick="goTab('sp')"><span>🔵</span>Sarco Due</button>
+  <button class="tab" onclick="goTab('fp')"><span>🟣</span>Fusion Due</button>
+  <button class="tab" onclick="goTab('actual')"><span>🏦</span>Actual Hai</button>
+  <button class="tab" onclick="goTab('hist')"><span>📅</span>History</button>
+</div>
+
+<!-- SUMMARY -->
+<div id="pg-ov" class="pg on">
+  <div class="calc-card" id="calcCard"></div>
+  <div class="sgrid" id="scards"></div>
+</div>
+
+<!-- TOTAL CASH (System) -->
+<div id="pg-sys" class="pg">
+  <div class="card">
+    <h3>🟢 System Cash Inputs</h3>
+    <div class="inp-row"><label>Sarco System Cash (₹)</label><input type="number" id="sys-sarco" oninput="updateSys('sarco',this.value)"></div>
+    <div class="inp-row"><label>Fusion System Cash (₹)</label><input type="number" id="sys-fusion" oninput="updateSys('fusion',this.value)"></div>
+    <div class="inp-row" style="background:var(--blue-bg)"><label style="color:var(--blue)">Extra Cash (₹)</label><input type="number" id="sys-extra" oninput="updateSys('extra',this.value)" style="border-color:var(--blue)"></div>
+  </div>
+  <div class="card" style="background:var(--green-bg);border-color:var(--green)">
+    <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1rem;color:var(--green)">
+      <span>Total Cash</span><span id="totalCashDisplay">₹0</span>
+    </div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-top:4px">Sarco + Fusion + Extra Cash</div>
+  </div>
+</div>
+
+<!-- DASTI -->
+<div id="pg-ds" class="pg">
+  <div class="ded-col">
+    <div class="dc-head"><span>✋ Dasti</span><button onclick="openAddModal('ds')">+ Add</button></div>
+    <div id="ds-list"></div>
+    <div class="ded-total"><span>Total Dasti</span><span id="ds-total">₹0</span></div>
+  </div>
+</div>
+
+<!-- SARCO PAID DUE -->
+<div id="pg-sp" class="pg">
+  <div class="ded-col">
+    <div class="dc-head"><span>🔵 Sarco Paid Due</span><button onclick="openAddModal('sp')">+ Add</button></div>
+    <div id="sp-list"></div>
+    <div class="ded-total"><span>Total Sarco Paid Due</span><span id="sp-total">₹0</span></div>
+  </div>
+</div>
+
+<!-- FUSION PAID DUE -->
+<div id="pg-fp" class="pg">
+  <div class="ded-col">
+    <div class="dc-head"><span>🟣 Fusion Paid Due</span><button onclick="openAddModal('fp')">+ Add</button></div>
+    <div id="fp-list"></div>
+    <div class="ded-total"><span>Total Fusion Paid Due</span><span id="fp-total">₹0</span></div>
+  </div>
+</div>
+
+<!-- ACTUAL IN HAND BREAKUP -->
+<div id="pg-actual" class="pg">
+  <div class="card">
+    <h3>🏦 Actual In Hand Breakup</h3>
+    <p style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">Cash, Bank, Taufiq — yahan daalo jitna physically/account mein hai</p>
+    <div class="inp-row"><label>Cash (₹)</label><input type="number" id="loc-cash" oninput="updateLoc('cash',this.value)"></div>
+    <div class="inp-row"><label>Bank (₹)</label><input type="number" id="loc-bank" oninput="updateLoc('bank',this.value)"></div>
+    <div class="inp-row"><label>Taufiq (₹)</label><input type="number" id="loc-taufiq" oninput="updateLoc('taufiq',this.value)"></div>
+  </div>
+  <div class="card" style="background:var(--orange-bg);border-color:var(--orange)">
+    <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1rem;color:var(--orange)">
+      <span>Actually Hai (Total)</span><span id="actuallyHaveDisplay">₹0</span>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div id="pg-hist" class="pg">
+  <div class="card">
+    <h3>📅 Save Today's Snapshot</h3>
+    <button class="btn b" onclick="saveSnapshot()">📌 Save Snapshot for Today</button>
+  </div>
+  <div class="sh"><h2>Saved Snapshots</h2></div>
+  <div id="list-hist"></div>
+</div>
+
+<!-- ADD ENTRY MODAL -->
+<div class="modal-ov" id="addModal">
+  <div class="modal-box">
+    <h3 id="addModalTitle">+ Add Entry</h3>
+    <div class="row full">
+      <div class="fg"><label>Narration</label><input type="text" id="add-narration" placeholder="e.g. Hamali, Toner"></div>
+    </div>
+    <div class="row full">
+      <div class="fg"><label>Amount (₹)</label><input type="number" id="add-amount" placeholder="0"></div>
+    </div>
+    <button class="btn g" onclick="saveAddModal()">✓ Add</button>
+    <button class="btn" style="background:#eee;color:#333" onclick="closeAddModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+var MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var cMon = new Date().getMonth();
+var cYr  = new Date().getFullYear();
+var addModalType=null;
+
+function today(){ return new Date().toISOString().split('T')[0]; }
+function fmt(n){ return '₹' + (Number(n)||0).toLocaleString('en-IN'); }
+function fdate(s){ if(!s) return ''; var p=s.split('-'); return p[2]+' '+MON[parseInt(p[1])-1]+' '+p[0]; }
+
+function getKey(){ return 'tcr3_'+cYr+'_'+cMon; }
+function getD(){
+  var v=localStorage.getItem(getKey());
+  var def={sys:{sarco:0,fusion:0,extra:0}, ds:[], sp:[], fp:[], locs:{cash:0,bank:0,taufiq:0}, hist:[]};
+  try{ return v ? Object.assign({}, def, JSON.parse(v)) : def; }
+  catch(e){ return def; }
+}
+function setD(d){ localStorage.setItem(getKey(), JSON.stringify(d)); }
+
+function chDate(dir){
+  cMon += dir;
+  if(cMon>11){ cMon=0; cYr++; }
+  if(cMon<0){ cMon=11; cYr--; }
+  document.getElementById('dateLbl').textContent = MON[cMon]+' '+cYr;
+  loadInputsForMonth();
+  renderAll();
+}
+
+function goTab(t){
+  ['ov','sys','ds','sp','fp','actual','hist'].forEach(function(id){
+    document.getElementById('pg-'+id).className = 'pg'+(id===t?' on':'');
+  });
+  document.querySelectorAll('.tab').forEach(function(el,i){
+    el.className = 'tab'+ (['ov','sys','ds','sp','fp','actual','hist'][i]===t?' on':'');
+  });
+  renderAll();
+}
+
+function loadInputsForMonth(){
+  var d=getD();
+  document.getElementById('sys-sarco').value = d.sys.sarco || '';
+  document.getElementById('sys-fusion').value = d.sys.fusion || '';
+  document.getElementById('sys-extra').value = d.sys.extra || '';
+  document.getElementById('loc-cash').value = d.locs.cash || '';
+  document.getElementById('loc-bank').value = d.locs.bank || '';
+  document.getElementById('loc-taufiq').value = d.locs.taufiq || '';
+}
+
+// ---- SYSTEM CASH INPUTS ----
+function updateSys(key, val){
+  var d=getD();
+  d.sys[key]=parseFloat(val)||0;
+  setD(d);
+  renderAll();
+}
+
+// ---- ACTUAL LOCATION INPUTS ----
+function updateLoc(key, val){
+  var d=getD();
+  d.locs[key]=parseFloat(val)||0;
+  setD(d);
+  renderAll();
+}
+
+// ---- ADD ENTRY MODAL (for ds/sp/fp) ----
+function openAddModal(type){
+  addModalType=type;
+  document.getElementById('add-narration').value='';
+  document.getElementById('add-amount').value='';
+  var titles={ds:'✋ Add Dasti Entry', sp:'🔵 Add Sarco Paid Due Entry', fp:'🟣 Add Fusion Paid Due Entry'};
+  document.getElementById('addModalTitle').textContent = titles[type] || '+ Add Entry';
+  document.getElementById('addModal').classList.add('show');
+}
+function closeAddModal(){
+  document.getElementById('addModal').classList.remove('show');
+  addModalType=null;
+}
+function saveAddModal(){
+  var narration=document.getElementById('add-narration').value.trim();
+  var amount=parseFloat(document.getElementById('add-amount').value)||0;
+  if(!amount){ alert('Please enter amount!'); return; }
+  var d=getD();
+  d[addModalType].push({id:Date.now(), narration:narration||'Entry', amt:amount});
+  setD(d);
+  closeAddModal();
+  renderAll();
+}
+function delEntry(type, id){
+  id=parseInt(id);
+  if(!confirm('Delete this entry?')) return;
+  var d=getD();
+  d[type]=d[type].filter(function(e){ return parseInt(e.id)!==id; });
+  setD(d); renderAll();
+}
+
+// ---- SNAPSHOT ----
+function saveSnapshot(){
+  var d=getD();
+  var calc=computeTotals(d);
+  d.hist.push({
+    id:Date.now(),
+    date: today(),
+    totalCash: calc.totalCash,
+    dsTotal: calc.dsTotal,
+    spTotal: calc.spTotal,
+    fpTotal: calc.fpTotal,
+    actualInHand: calc.actualInHand,
+    actuallyHave: calc.actuallyHave,
+    diff: calc.diff
+  });
+  setD(d);
+  alert('Snapshot saved for '+fdate(today())+'!');
+  renderAll();
+}
+function delHist(id){
+  id=parseInt(id);
+  if(!confirm('Delete this snapshot?')) return;
+  var d=getD();
+  d.hist=d.hist.filter(function(e){ return parseInt(e.id)!==id; });
+  setD(d); renderAll();
+}
+
+function computeTotals(d){
+  var totalCash = (d.sys.sarco||0)+(d.sys.fusion||0)+(d.sys.extra||0);
+  var dsTotal=0; for(var i=0;i<d.ds.length;i++) dsTotal+=d.ds[i].amt||0;
+  var spTotal=0; for(var i=0;i<d.sp.length;i++) spTotal+=d.sp[i].amt||0;
+  var fpTotal=0; for(var i=0;i<d.fp.length;i++) fpTotal+=d.fp[i].amt||0;
+  var actualInHand = totalCash - dsTotal - spTotal - fpTotal;
+  var actuallyHave = (d.locs.cash||0)+(d.locs.bank||0)+(d.locs.taufiq||0);
+  var diff = actualInHand - actuallyHave;
+  return {totalCash:totalCash, dsTotal:dsTotal, spTotal:spTotal, fpTotal:fpTotal, actualInHand:actualInHand, actuallyHave:actuallyHave, diff:diff};
+}
+
+// ---- RENDER ----
+function renderAll(){
+  var d=getD();
+  var calc=computeTotals(d);
+
+  // Calc card on summary
+  document.getElementById('calcCard').innerHTML=
+    '<div class="calc-row"><span>Total Cash (Sarco+Fusion+Extra)</span><span>'+fmt(calc.totalCash)+'</span></div>'+
+    '<div class="calc-row minus"><span>− Dasti</span><span>'+fmt(calc.dsTotal)+'</span></div>'+
+    '<div class="calc-row minus"><span>− Sarco Paid Due</span><span>'+fmt(calc.spTotal)+'</span></div>'+
+    '<div class="calc-row minus"><span>− Fusion Paid Due</span><span>'+fmt(calc.fpTotal)+'</span></div>'+
+    '<div class="calc-row total" style="color:'+(calc.actualInHand>=0?'var(--green)':'var(--red)')+'"><span>Actual In Hand</span><span>'+fmt(calc.actualInHand)+'</span></div>';
+
+  document.getElementById('scards').innerHTML=
+    '<div class="sc si"><div class="sl">Actual In Hand (Should Be)</div><div class="sv">'+fmt(calc.actualInHand)+'</div><div class="ss">After all deductions</div></div>'+
+    '<div class="sc se"><div class="sl">Actually Hai (Cash+Bank+Taufiq)</div><div class="sv">'+fmt(calc.actuallyHave)+'</div><div class="ss">Physical breakup</div></div>'+
+    '<div class="sc sn" style="border-color:'+(calc.diff===0?'var(--green)':'var(--red)')+'">'+
+      '<div class="sl">⚖️ Difference (Should Be − Actually Hai)</div>'+
+      '<div class="sv" style="color:'+(calc.diff===0?'var(--green)':'var(--red)')+'">'+fmt(calc.diff)+'</div>'+
+      '<div class="ss">'+(calc.diff===0?'✅ Match! Sab sahi hai':(calc.diff>0?'⚠️ Itna paisa SHORT hai':'➕ Itna paisa EXTRA hai'))+'</div>'+
+    '</div>';
+
+  // Total cash tab display
+  document.getElementById('totalCashDisplay').textContent = fmt(calc.totalCash);
+  document.getElementById('actuallyHaveDisplay').textContent = fmt(calc.actuallyHave);
+
+  // Render deduction lists
+  function renderDedList(type, containerId, totalId){
+    var list=d[type];
+    var html='';
+    if(list.length===0) html='<div class="empty-ded">Koi entry nahi hai. "+ Add" dabao.</div>';
+    else for(var i=0;i<list.length;i++){
+      var e=list[i];
+      html += '<div class="ded-entry">'+
+        '<span class="narration">('+e.narration+')</span>'+
+        '<span class="amt">'+fmt(e.amt)+'</span>'+
+        '<button class="del" onclick="delEntry(\''+type+'\','+e.id+')">✕</button>'+
+      '</div>';
+    }
+    document.getElementById(containerId).innerHTML=html;
+    var total=0; for(var i=0;i<list.length;i++) total+=list[i].amt||0;
+    document.getElementById(totalId).textContent=fmt(total);
+  }
+  renderDedList('ds','ds-list','ds-total');
+  renderDedList('sp','sp-list','sp-total');
+  renderDedList('fp','fp-list','fp-total');
+
+  // History
+  var histSorted=[].concat(d.hist).sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+  var hhtml='';
+  if(histSorted.length===0) hhtml='<div class="empty"><div class="ei">📅</div>No snapshots saved yet</div>';
+  else for(var i=0;i<histSorted.length;i++){
+    var e=histSorted[i];
+    hhtml+='<div class="ec">'+
+      '<div class="ec-actions"><button class="delbtn" onclick="delHist('+e.id+')">✕</button></div>'+
+      '<div class="et">'+fdate(e.date)+'</div>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">'+
+        '<span class="tg gb">Should Be: '+fmt(e.actualInHand)+'</span>'+
+        '<span class="tg gi">Actually: '+fmt(e.actuallyHave)+'</span>'+
+        '<span class="tg '+(e.diff===0?'gi':'gr')+'">Diff: '+fmt(e.diff)+'</span>'+
+      '</div>'+
+    '</div>';
+  }
+  document.getElementById('list-hist').innerHTML=hhtml;
+}
+
+document.getElementById('dateLbl').textContent = MON[cMon]+' '+cYr;
+loadInputsForMonth();
+renderAll();
+
+function exportData(){
+  var allData = {};
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k.indexOf('tcr3_')===0) allData[k]=localStorage.getItem(k);
+  }
+  var json = JSON.stringify(allData, null, 2);
+  var blob = new Blob([json], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'taufiq-cash-report-backup-'+today()+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(){
+  var inp = document.createElement('input');
+  inp.type='file'; inp.accept='.json';
+  inp.onchange = function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      try{
+        var data = JSON.parse(ev.target.result);
+        var count=0;
+        for(var k in data){
+          if(k.indexOf('tcr3_')===0){ localStorage.setItem(k, data[k]); count++; }
+        }
+        alert('Data imported! '+count+' months restored.');
+        loadInputsForMonth();
+        renderAll();
+      } catch(err){ alert('Invalid backup file!'); }
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+}
+</script>
+</body>
+</html>
